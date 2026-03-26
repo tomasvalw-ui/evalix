@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evalix</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --surface: #141414;
+    --surface2: #1e1e1e;
+    --surface3: #272727;
+    --border: rgba(255,255,255,0.06);
+    --border2: rgba(255,255,255,0.11);
+    --border3: rgba(255,255,255,0.18);
+    --accent: #e8e8e8;
+    --accent2: #a0a0a0;
+    --text: #f2f2f2;
+    --text2: #888;
+    --text3: #555;
+    --green: #3ecf8e;
+    --red: #e05252;
+    --blue: #4f8ef7;
+    --amber: #f0a050;
+    --radius: 8px;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'Manrope',sans-serif; min-height:100vh; overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .layout { display:grid; grid-template-columns:268px 1fr; grid-template-rows:58px 1fr; height:100vh; }
+
+  /* HEADER */
+  header { grid-column:1/-1; display:flex; align-items:center; justify-content:space-between; padding:0 24px; border-bottom:1px solid var(--border); }
+
+  .logo { display:flex; align-items:center; gap:12px; text-decoration:none; }
+
+  .logo-badge {
+    display:flex; align-items:center; gap:0;
+    background:#fff; border-radius:6px;
+    padding:0;
+    overflow:hidden;
+    height:30px;
+  }
+  .logo-badge-left {
+    background:#0a0a0a;
+    color:#fff;
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:13px;
+    letter-spacing:0.04em;
+    padding:0 10px;
+    height:100%;
+    display:flex;
+    align-items:center;
+  }
+  .logo-badge-right {
+    background:#fff;
+    color:#0a0a0a;
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:13px;
+    letter-spacing:0.04em;
+    padding:0 10px;
+    height:100%;
+    display:flex;
+    align-items:center;
+  }
+
+  .logo-name {
+    font-family:'Space Grotesk',sans-serif;
+    font-size:17px;
+    font-weight:600;
+    letter-spacing:-0.02em;
+    color:var(--text);
+  }
+
+  .logo-name span { color:var(--text2); font-weight:400; }
+
+  .header-center {
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--text3);
+  }
+
+  .header-right { display:flex; align-items:center; gap:16px; }
+
+  .pill {
+    display:flex; align-items:center; gap:6px;
+    padding:4px 10px;
+    border:1px solid var(--border2);
+    border-radius:20px;
+    font-size:11px;
+    color:var(--text2);
+  }
+
+  .pill-dot { width:5px; height:5px; border-radius:50%; background:var(--green); animation:pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
+
+  /* SIDEBAR */
+  aside { border-right:1px solid var(--border); display:flex; flex-direction:column; background:var(--surface); }
+
+  .aside-header { padding:18px 16px 14px; border-bottom:1px solid var(--border); }
+
+  .new-btn {
+    width:100%; padding:9px 14px;
+    background:var(--surface2);
+    border:1px solid var(--border2);
+    border-radius:var(--radius);
+    color:var(--text);
+    font-family:'Manrope',sans-serif;
+    font-size:13px; font-weight:600;
+    cursor:pointer;
+    display:flex; align-items:center; gap:8px;
+    transition:all .15s;
+    letter-spacing:0.01em;
+  }
+  .new-btn:hover { background:var(--surface3); border-color:var(--border3); }
+  .new-btn-plus { width:20px; height:20px; background:var(--surface3); border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:15px; color:var(--text2); line-height:1; }
+
+  .aside-body { flex:1; overflow-y:auto; padding:14px 12px; }
+
+  .section-label { font-size:10px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text3); margin-bottom:8px; padding:0 4px; }
+
+  .project-list { display:flex; flex-direction:column; gap:2px; margin-bottom:20px; }
+
+  .project-item { padding:9px 10px; border-radius:var(--radius); cursor:pointer; display:flex; align-items:center; gap:10px; border:1px solid transparent; transition:all .12s; }
+  .project-item:hover { background:var(--surface2); }
+  .project-item.active { background:var(--surface2); border-color:var(--border2); }
+
+  .p-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+  .p-info { flex:1; min-width:0; }
+  .p-name { font-size:13px; font-weight:600; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .p-meta { font-size:11px; color:var(--text3); margin-top:1px; }
+
+  .p-badge { font-size:10px; font-weight:700; letter-spacing:0.03em; padding:2px 7px; border-radius:4px; }
+  .b-active { background:rgba(78,142,247,.13); color:var(--blue); }
+  .b-done { background:rgba(62,207,142,.12); color:var(--green); }
+  .b-review { background:rgba(255,255,255,.06); color:var(--text2); }
+
+  .aside-footer { padding:12px 16px; border-top:1px solid var(--border); display:flex; align-items:center; gap:10px; }
+  .user-av { width:28px; height:28px; border-radius:6px; background:var(--surface3); border:1px solid var(--border2); display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; color:var(--text2); flex-shrink:0; }
+  .user-name { font-size:12px; font-weight:600; color:var(--text2); }
+
+  /* MAIN */
+  main { display:flex; flex-direction:column; overflow:hidden; }
+
+  .chat-bar { height:50px; padding:0 28px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; flex-shrink:0; }
+  .bar-left { display:flex; align-items:center; gap:10px; }
+  .bar-title { font-size:13px; font-weight:600; color:var(--text); }
+  .bar-sep { width:1px; height:14px; background:var(--border2); }
+  .bar-sub { font-size:12px; color:var(--text3); }
+  .bar-actions { display:flex; gap:6px; }
+  .bar-btn { padding:5px 11px; border:1px solid var(--border); border-radius:6px; background:transparent; color:var(--text3); font-family:'Manrope',sans-serif; font-size:12px; cursor:pointer; transition:all .12s; }
+  .bar-btn:hover { color:var(--text); border-color:var(--border2); background:var(--surface2); }
+
+  /* MESSAGES */
+  .messages { flex:1; overflow-y:auto; padding:28px 28px; display:flex; flex-direction:column; gap:20px; scrollbar-width:thin; scrollbar-color:var(--surface3) transparent; }
+  .messages::-webkit-scrollbar { width:3px; }
+  .messages::-webkit-scrollbar-thumb { background:var(--surface3); }
+
+  /* WELCOME */
+  .welcome { display:flex; flex-direction:column; gap:18px; max-width:520px; animation:fadeup .5s ease; padding-top:12px; }
+  @keyframes fadeup { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+  .welcome-tag { display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text3); }
+  .welcome-tag::before { content:''; display:block; width:16px; height:1px; background:var(--text3); }
+
+  .welcome h2 { font-family:'Space Grotesk',sans-serif; font-size:28px; font-weight:700; line-height:1.2; color:var(--text); letter-spacing:-0.02em; }
+  .welcome h2 span { color:var(--text2); font-weight:300; }
+
+  .welcome-desc { font-size:13.5px; color:var(--text2); line-height:1.75; font-weight:400; }
+
+  .suggestions { display:flex; flex-direction:column; gap:5px; margin-top:4px; }
+  .suggestion { padding:10px 14px; border:1px solid var(--border); border-radius:var(--radius); background:var(--surface); font-size:13px; color:var(--text2); cursor:pointer; transition:all .12s; display:flex; justify-content:space-between; align-items:center; font-family:'Manrope',sans-serif; font-weight:500; }
+  .suggestion:hover { background:var(--surface2); border-color:var(--border2); color:var(--text); }
+  .suggestion-arrow { color:var(--text3); font-size:12px; }
+
+  /* MESSAGES */
+  .message { display:flex; gap:12px; animation:fadeup .22s ease; }
+  .message.user { flex-direction:row-reverse; }
+
+  .m-avatar { width:28px; height:28px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; flex-shrink:0; margin-top:2px; }
+  .m-avatar.agent { background:var(--surface2); border:1px solid var(--border2); color:var(--accent2); }
+  .m-avatar.user-av { background:var(--surface2); border:1px solid var(--border); color:var(--text2); }
+
+  .m-body { max-width:70%; }
+  .bubble { padding:11px 15px; font-size:13.5px; line-height:1.7; }
+  .bubble.agent { background:var(--surface); border:1px solid var(--border); border-radius:3px 8px 8px 8px; color:var(--text); }
+  .bubble.user { background:var(--surface2); border:1px solid var(--border2); border-radius:8px 3px 8px 8px; color:var(--text); }
+  .m-time { font-size:11px; color:var(--text3); margin-top:5px; padding:0 2px; }
+  .message.user .m-time { text-align:right; }
+
+  .typing-row { display:flex; gap:12px; }
+  .typing-bubble { padding:13px 16px; background:var(--surface); border:1px solid var(--border); border-radius:3px 8px 8px 8px; display:flex; gap:4px; align-items:center; }
+  .typing-bubble span { width:5px; height:5px; background:var(--text3); border-radius:50%; animation:dot 1.3s infinite; }
+  .typing-bubble span:nth-child(2){animation-delay:.15s}
+  .typing-bubble span:nth-child(3){animation-delay:.3s}
+  @keyframes dot { 0%,80%,100%{opacity:.25;transform:scale(.85)} 40%{opacity:1;transform:scale(1)} }
+
+  /* INPUT */
+  .input-zone { padding:14px 28px 20px; border-top:1px solid var(--border); flex-shrink:0; }
+
+  .rec-notice { display:none; align-items:center; gap:7px; font-size:12px; color:var(--red); margin-bottom:8px; font-weight:500; }
+  .rec-notice.on { display:flex; }
+  .rec-dot { width:6px; height:6px; border-radius:50%; background:var(--red); animation:pulse 1s infinite; }
+
+  .input-box { background:var(--surface); border:1px solid var(--border2); border-radius:var(--radius); display:flex; align-items:flex-end; gap:6px; padding:6px 6px 6px 16px; transition:border-color .15s; }
+  .input-box:focus-within { border-color:var(--border3); }
+
+  textarea { flex:1; background:transparent; border:none; outline:none; color:var(--text); font-family:'Manrope',sans-serif; font-size:13.5px; resize:none; padding:8px 0; min-height:40px; max-height:120px; line-height:1.6; font-weight:400; }
+  textarea::placeholder { color:var(--text3); }
+
+  .input-btns { display:flex; gap:4px; padding-bottom:2px; }
+
+  .i-btn { width:36px; height:36px; border-radius:6px; border:1px solid var(--border); background:transparent; color:var(--text3); cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .12s; }
+  .i-btn:hover { color:var(--text); background:var(--surface2); border-color:var(--border2); }
+  .i-btn.rec { color:var(--red); border-color:rgba(224,82,82,.3); background:rgba(224,82,82,.08); }
+
+  .i-send { width:36px; height:36px; border-radius:6px; border:none; background:var(--text); color:var(--bg); cursor:pointer; display:flex; align-items:center; justify-content:center; transition:opacity .12s; }
+  .i-send:hover { opacity:.85; }
+
+  .input-hint { font-size:11px; color:var(--text3); margin-top:7px; padding:0 2px; }
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo">
+      <div class="logo-badge">
+        <div class="logo-badge-left">EV</div>
+        <div class="logo-badge-right">ALIX</div>
+      </div>
+      <span class="logo-name">Eval<span>ix</span></span>
+    </div>
+    <div class="header-center">Asesor técnico · financiero</div>
+    <div class="header-right">
+      <div class="pill"><div class="pill-dot"></div>Agente activo</div>
+    </div>
+  </header>
+
+  <!-- SIDEBAR -->
+  <aside>
+    <div class="aside-header">
+      <button class="new-btn" onclick="newProject()">
+        <span class="new-btn-plus">+</span>Nuevo proyecto
+      </button>
+    </div>
+    <div class="aside-body">
+      <div class="section-label">Proyectos evaluados</div>
+      <div class="project-list" id="projectList">
+        <div class="project-item active" onclick="selectProject(this,'Notion')">
+          <div class="p-dot" style="background:var(--blue)"></div>
+          <div class="p-info">
+            <div class="p-name">Notion</div>
+            <div class="p-meta">Hoy · 3 documentos</div>
+          </div>
+          <span class="p-badge b-active">Activo</span>
+        </div>
+        <div class="project-item" onclick="selectProject(this,'Fintual')">
+          <div class="p-dot" style="background:var(--green)"></div>
+          <div class="p-info">
+            <div class="p-name">Fintual</div>
+            <div class="p-meta">Ayer · 6 documentos</div>
+          </div>
+          <span class="p-badge b-done">Completo</span>
+        </div>
+        <div class="project-item" onclick="selectProject(this,'Buk')">
+          <div class="p-dot" style="background:var(--text3)"></div>
+          <div class="p-info">
+            <div class="p-name">Buk</div>
+            <div class="p-meta">Mar 22 · 4 documentos</div>
+          </div>
+          <span class="p-badge b-review">Revisión</span>
+        </div>
+      </div>
+    </div>
+    <div class="aside-footer">
+      <div class="user-av">TV</div>
+      <div class="user-name">Tomás Valenzuela</div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main>
+    <div class="chat-bar">
+      <div class="bar-left">
+        <span class="bar-title" id="chatTitle">Nuevo análisis</span>
+        <div class="bar-sep"></div>
+        <span class="bar-sub">Evalix</span>
+      </div>
+      <div class="bar-actions">
+        <button class="bar-btn" onclick="clearChat()">Limpiar</button>
+        <button class="bar-btn" onclick="exportChat()">Exportar</button>
+      </div>
+    </div>
+
+    <div class="messages" id="messages">
+      <div class="welcome" id="welcome">
+        <div class="welcome-tag">Evalix</div>
+        <h2>¿Qué proyecto<br><span>evaluamos hoy?</span></h2>
+        <p class="welcome-desc">Soy tu asesor técnico-financiero para startups. Investigo el mercado, analizo el modelo de negocio, identifico riesgos y genero informes estructurados que se guardan automáticamente en Google Drive.</p>
+        <div class="suggestions">
+          <div class="suggestion" onclick="useSuggestion(this)">Quiero evaluar la startup Notion <span class="suggestion-arrow">→</span></div>
+          <div class="suggestion" onclick="useSuggestion(this)">Analiza el modelo de negocio de Fintual <span class="suggestion-arrow">→</span></div>
+          <div class="suggestion" onclick="useSuggestion(this)">¿Cuáles son mis proyectos evaluados? <span class="suggestion-arrow">→</span></div>
+          <div class="suggestion" onclick="useSuggestion(this)">Compara dos startups del sector fintech <span class="suggestion-arrow">→</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="input-zone">
+      <div class="rec-notice" id="recNotice">
+        <div class="rec-dot"></div>Grabando — haz clic en el micrófono para detener
+      </div>
+      <div class="input-box">
+        <textarea id="msgInput" placeholder="Escribe tu consulta o graba un audio..." rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+        <div class="input-btns">
+          <button class="i-btn" id="recBtn" onclick="toggleRecord()" title="Grabar audio">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+          </button>
+          <button class="i-send" onclick="sendMessage()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="input-hint">Enter para enviar · Shift+Enter nueva línea · 🎙 para audio</div>
+    </div>
+  </main>
+</div>
+
+<script>
+  const N8N_URL = 'https://n8n.agroinventario.cl//webhook/e4c6deee-063a-4b4d-bc9e-a9b5849b9164/chat';
+
+  let isRecording=false, mediaRecorder=null, audioChunks=[];
+
+  function getSession(){
+    if(!localStorage.getItem('evalix_s')) localStorage.setItem('evalix_s','ev_'+Date.now());
+    return localStorage.getItem('evalix_s');
+  }
+
+  function autoResize(el){ el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,120)+'px'; }
+
+  function handleKey(e){ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();} }
+
+  function useSuggestion(el){ document.getElementById('msgInput').value=el.textContent.replace('→','').trim(); sendMessage(); }
+
+  function hideWelcome(){ const w=document.getElementById('welcome'); if(w)w.remove(); }
+
+  function ts(){ return new Date().toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'}); }
+
+  function addMsg(text,role){
+    hideWelcome();
+    const c=document.getElementById('messages');
+    const d=document.createElement('div');
+    d.className=`message ${role}`;
+    const ag=role!=='user';
+    d.innerHTML=`<div class="m-avatar ${ag?'agent':'user-av'}">${ag?'EV':'TV'}</div><div class="m-body"><div class="bubble ${ag?'agent':'user'}">${text}</div><div class="m-time">${ts()}</div></div>`;
+    c.appendChild(d); c.scrollTop=c.scrollHeight;
+  }
+
+  function addTyping(){
+    hideWelcome();
+    const c=document.getElementById('messages');
+    const d=document.createElement('div');
+    d.className='typing-row'; d.id='typing';
+    d.innerHTML=`<div class="m-avatar agent">EV</div><div class="typing-bubble"><span></span><span></span><span></span></div>`;
+    c.appendChild(d); c.scrollTop=c.scrollHeight;
+  }
+
+  function removeTyping(){ const t=document.getElementById('typing'); if(t)t.remove(); }
+
+  async function sendMessage(){
+    const inp=document.getElementById('msgInput');
+    const text=inp.value.trim(); if(!text)return;
+    addMsg(text,'user');
+    inp.value=''; inp.style.height='auto';
+    addTyping();
+    try{
+      const r=await fetch(N8N_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chatInput:text,sessionId:getSession()})});
+      const data=await r.json(); removeTyping();
+      addMsg(data.output||data.text||data.message||'Respuesta recibida.','agent');
+    }catch{ removeTyping(); addMsg('No se pudo conectar con el agente. Verifica que n8n esté activo.','agent'); }
+  }
+
+  async function toggleRecord(){
+    const btn=document.getElementById('recBtn'), bar=document.getElementById('recNotice');
+    if(!isRecording){
+      try{
+        const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+        mediaRecorder=new MediaRecorder(stream); audioChunks=[];
+        mediaRecorder.ondataavailable=e=>audioChunks.push(e.data);
+        mediaRecorder.onstop=sendAudio; mediaRecorder.start();
+        isRecording=true; btn.classList.add('rec'); bar.classList.add('on');
+      }catch{ addMsg('No se pudo acceder al micrófono. Verifica los permisos.','agent'); }
+    }else{
+      mediaRecorder.stop(); mediaRecorder.stream.getTracks().forEach(t=>t.stop());
+      isRecording=false; btn.classList.remove('rec'); bar.classList.remove('on');
+    }
+  }
+
+  async function sendAudio(){
+    const blob=new Blob(audioChunks,{type:'audio/webm'});
+    addMsg('🎙 Audio enviado — procesando...','user'); addTyping();
+    try{
+      const fd=new FormData(); fd.append('audio',blob,'audio.webm'); fd.append('sessionId',getSession());
+      const r=await fetch(N8N_URL,{method:'POST',body:fd});
+      const data=await r.json(); removeTyping();
+      addMsg(data.output||data.text||data.message||'Audio procesado.','agent');
+    }catch{ removeTyping(); addMsg('Error al procesar el audio.','agent'); }
+  }
+
+  function selectProject(el,name){
+    document.querySelectorAll('.project-item').forEach(i=>i.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('chatTitle').textContent=name;
+    document.getElementById('messages').innerHTML='';
+    addMsg(`Proyecto <strong>${name}</strong> cargado. ¿Qué quieres consultar?`,'agent');
+  }
+
+  function newProject(){
+    document.querySelectorAll('.project-item').forEach(i=>i.classList.remove('active'));
+    document.getElementById('chatTitle').textContent='Nuevo análisis';
+    document.getElementById('messages').innerHTML=`<div class="welcome" id="welcome"><div class="welcome-tag">Evalix</div><h2>¿Qué startup<br><span>analizamos?</span></h2><p class="welcome-desc">Escribe el nombre de la empresa o graba un audio con tu consulta.</p><div class="suggestions"><div class="suggestion" onclick="useSuggestion(this)">Quiero evaluar una startup <span class="suggestion-arrow">→</span></div><div class="suggestion" onclick="useSuggestion(this)">Análisis de mercado fintech <span class="suggestion-arrow">→</span></div><div class="suggestion" onclick="useSuggestion(this)">Comparar dos modelos de negocio <span class="suggestion-arrow">→</span></div></div></div>`;
+  }
+
+  function clearChat(){ if(confirm('¿Limpiar el chat actual?'))newProject(); }
+
+  function exportChat(){
+    const msgs=document.querySelectorAll('.bubble');
+    let txt=`EVALIX — Exportación\n${new Date().toLocaleString('es-CL')}\n${'─'.repeat(40)}\n\n`;
+    msgs.forEach(m=>{txt+=m.textContent.trim()+'\n\n';});
+    const a=document.createElement('a');
+    a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(txt);
+    a.download=`evalix-${Date.now()}.txt`; a.click();
+  }
+</script>
+</body>
+</html>
